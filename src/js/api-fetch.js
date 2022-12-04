@@ -19,6 +19,11 @@ export default class NewsApiService {
       .then(response => response.json())
       .then(({ hits }) => {
         this.incrementPage();
+        if (hits === []) {
+          return Notify.failure(
+            'Sorry, there are no images matching your search query. Please try again.'
+          );
+        }
         return hits;
       });
   }

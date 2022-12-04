@@ -11,7 +11,7 @@ export const getItemTemplate = ({
 <div class="gallery__item photo-card">
 
     <a class="gallery__link" href="${largeImageURL}">
-        <img src="${webformatURL}}" alt="${tags}" loading="lazy" />
+        <img src="${webformatURL}}" alt="${tags}" loading="lazy"/>
     </a>
     
     <div class="info">

@@ -3,6 +3,7 @@ import LoadMoreBtn from './components/load-more-btn';
 import SimpleLightbox from 'simplelightbox';
 import '/node_modules/simplelightbox/dist/simple-lightbox.min.css';
 import { getItemTemplate } from './template';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -23,7 +24,7 @@ function onSearch(e) {
   newsApiService.query = e.currentTarget.elements.searchQuery.value;
 
   if (newsApiService.searchQuery === '') {
-    return alert('Введи что-то нормальное');
+    return Notify.failure('Введи что-то нормальное');
   }
 
   loadMoreBtn.show();
@@ -35,8 +36,14 @@ function onSearch(e) {
 function fetchArticles() {
   loadMoreBtn.disable();
   newsApiService.fetchArticles().then(hits => {
-    console.log(hits);
+    if (hits === []) {
+      return Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
+
     appendArticlesMarkup(hits);
+
     loadMoreBtn.enable();
   });
 }
