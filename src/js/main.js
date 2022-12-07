@@ -4,6 +4,7 @@ import SimpleLightbox from 'simplelightbox';
 import '/node_modules/simplelightbox/dist/simple-lightbox.min.css';
 import { getItemTemplate } from './template';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Loading } from 'notiflix/build/notiflix-loading-aio';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -26,26 +27,27 @@ function onSearch(e) {
   if (newsApiService.searchQuery === '') {
     return Notify.failure('Введи что-то нормальное');
   }
-
-  loadMoreBtn.show();
   newsApiService.resetPage();
   clearArticlesContainer();
   fetchArticles();
 }
 
 function fetchArticles() {
+  Loading.dots();
+  Loading.change('Loading');
   loadMoreBtn.disable();
-  newsApiService.fetchArticles().then(hits => {
-    if (hits === []) {
-      return Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
-    }
-
-    appendArticlesMarkup(hits);
-
-    loadMoreBtn.enable();
-  });
+  newsApiService
+    .fetchArticles()
+    .then(hits => {
+      appendArticlesMarkup(hits);
+      if (hits.length > 0) {
+        // loadMoreBtn.show();
+        loadMoreBtn.enable();
+      }
+      console.log(hits.length);
+      Loading.remove(1000);
+    })
+    .catch(console.error());
 }
 
 function appendArticlesMarkup(hits) {
