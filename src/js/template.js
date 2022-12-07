@@ -35,6 +35,5 @@ export const getItemTemplate = ({
         ${downloads}
       </p>
     </div>
-
-
+  </div>
   `;
