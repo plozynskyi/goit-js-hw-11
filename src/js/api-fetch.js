@@ -14,6 +14,7 @@ export default class NewsApiService {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
+    this.totalHits = '';
   }
 
   fetchArticles() {
@@ -21,9 +22,10 @@ export default class NewsApiService {
 
     return fetch(url)
       .then(response => response.json())
-      .then(({ hits }) => {
+      .then(({ hits, total, totalHits }) => {
         this.incrementPage();
-        return hits;
+
+        return { hits, total, totalHits };
       });
   }
 

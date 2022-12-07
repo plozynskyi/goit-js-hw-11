@@ -36,6 +36,5 @@ export const getItemTemplate = ({
       </p>
     </div>
 
-</div>
 
   `;
