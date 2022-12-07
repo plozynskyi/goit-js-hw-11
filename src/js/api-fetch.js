@@ -22,11 +22,11 @@ export default class NewsApiService {
 
     return fetch(url)
       .then(response => response.json())
-      .then(({ hits, total, totalHits }) => {
+      .then(({ hits, totalHits }) => {
         this.incrementPage();
-
-        return { hits, total, totalHits };
-      });
+        return { hits, totalHits };
+      })
+      .catch(console.error());
   }
 
   incrementPage() {

@@ -4,8 +4,6 @@ import SimpleLightbox from 'simplelightbox';
 import '/node_modules/simplelightbox/dist/simple-lightbox.min.css';
 import { getItemTemplate } from './template';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { Report } from 'notiflix/build/notiflix-report-aio';
-import { Loading } from 'notiflix/build/notiflix-loading-aio';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -30,36 +28,30 @@ function onSearch(e) {
     return Notify.failure('Введи что-то нормальное');
   }
 
-  loadMoreBtn.show();
-
   newsApiService.resetPage();
 
   clearArticlesContainer();
 
-  newsApiService.fetchArticles().then(({ hits, total, totalHits }) => {
+  newsApiService.fetchArticles().then(({ hits, totalHits }) => {
     appendArticlesMarkup(hits);
 
-    if (hits.length === 0) {
-      // loadMoreBtn.disable();
-      Notify.failure();
-      loadMoreBtn.disable();
-      loadMoreBtn.hide();
+    if (hits.length > 0) {
+      Notify.success(`Hooray! We found ${totalHits} images.`);
+      loadMoreBtn.show();
     } else
-      Notify.success(`Hooray! We found ${totalHits} images.`),
-        loadMoreBtn.enable();
+      loadMoreBtn.hide(),
+        Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
   });
 }
 
 function fetchArticles() {
   loadMoreBtn.disable();
-  newsApiService.fetchArticles().then(({ hits, total, totalHits }) => {
+  newsApiService.fetchArticles().then(({ hits }) => {
     appendArticlesMarkup(hits);
 
     loadMoreBtn.enable();
-
-    if (hits.length === 0) {
-      loadMoreBtn.hide();
-    }
   });
 }
 
