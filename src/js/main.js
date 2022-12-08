@@ -4,6 +4,7 @@ import SimpleLightbox from 'simplelightbox';
 import '/node_modules/simplelightbox/dist/simple-lightbox.min.css';
 import { getItemTemplate } from './template';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Loading } from 'notiflix/build/notiflix-loading-aio';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -20,7 +21,7 @@ const newsApiService = new NewsApiService();
 refs.searchForm.addEventListener('submit', onSearch);
 loadMoreBtn.refs.button.addEventListener('click', fetchArticles);
 
-function onSearch(e) {
+async function onSearch(e) {
   e.preventDefault();
   newsApiService.query = e.currentTarget.elements.searchQuery.value;
 
@@ -31,28 +32,30 @@ function onSearch(e) {
   newsApiService.resetPage();
 
   clearArticlesContainer();
+  Loading.standard();
+  const { hits, totalHits } = await newsApiService.fetchArticles();
+  
+  appendArticlesMarkup(hits);
 
-  newsApiService.fetchArticles().then(({ hits, totalHits }) => {
-    appendArticlesMarkup(hits);
+  Loading.remove();
 
     if (hits.length > 0) {
       Notify.success(`Hooray! We found ${totalHits} images.`);
       loadMoreBtn.show();
-    } else
+    } else {
       loadMoreBtn.hide(),
         Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
-        );
-  });
+        );}
 }
 
-function fetchArticles() {
+async function fetchArticles() {
   loadMoreBtn.disable();
-  newsApiService.fetchArticles().then(({ hits }) => {
-    appendArticlesMarkup(hits);
-
-    loadMoreBtn.enable();
-  });
+  Loading.standard();
+  const { hits } = await newsApiService.fetchArticles();
+  appendArticlesMarkup(hits);
+  Loading.remove();
+  loadMoreBtn.enable();
 }
 
 function appendArticlesMarkup(hits) {

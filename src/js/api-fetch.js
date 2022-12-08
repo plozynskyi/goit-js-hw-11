@@ -1,14 +1,7 @@
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import axios from 'axios';
 
 const API_KEY = '31765853-e30cfb70381adc432e0775e7f';
 const BASE_URL = 'https://pixabay.com/api';
-
-const options = {
-  headers: {
-    Authorization: API_KEY,
-  },
-};
 
 export default class NewsApiService {
   constructor() {
@@ -17,16 +10,10 @@ export default class NewsApiService {
     this.totalHits = '';
   }
 
-  fetchArticles() {
-    const url = `${BASE_URL}/?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`;
-
-    return fetch(url)
-      .then(response => response.json())
-      .then(({ hits, totalHits }) => {
-        this.incrementPage();
-        return { hits, totalHits };
-      })
-      .catch(console.error());
+  async fetchArticles() {
+    const url = `${BASE_URL}/?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`;  
+    const { data } = await axios(url)
+    return data
   }
 
   incrementPage() {
