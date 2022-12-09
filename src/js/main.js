@@ -16,6 +16,12 @@ const loadMoreBtn = new LoadMoreBtn({
   hidden: true,
 });
 
+let gallery = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+  disableRightClick: true,
+});
+
 const newsApiService = new NewsApiService();
 
 refs.searchForm.addEventListener('submit', onSearch);
@@ -23,35 +29,46 @@ loadMoreBtn.refs.button.addEventListener('click', fetchArticles);
 
 async function onSearch(e) {
   e.preventDefault();
-  newsApiService.query = e.currentTarget.elements.searchQuery.value;
+  newsApiService.query = e.currentTarget.elements.searchQuery.value.trim();
 
   if (newsApiService.searchQuery === '') {
-    return Notify.failure('Введи что-то нормальное');
+    return Notify.failure('Enter the correct value to search for');
   }
 
   newsApiService.resetPage();
 
   clearArticlesContainer();
-  Loading.standard();
+  Loading.circle('Loading...', {
+    messageFontSize: '24px',
+    messageColor: '#8430c8',
+    svgSize: '100px',
+    svgColor: '#8430c8',
+  });
   const { hits, totalHits } = await newsApiService.fetchArticles();
-  
+
   appendArticlesMarkup(hits);
 
   Loading.remove();
 
-    if (hits.length > 0) {
-      Notify.success(`Hooray! We found ${totalHits} images.`);
-      loadMoreBtn.show();
-    } else {
-      loadMoreBtn.hide(),
-        Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );}
+  if (hits.length > 0) {
+    Notify.success(`Hooray! We found ${totalHits} images.`);
+    loadMoreBtn.show();
+  } else {
+    loadMoreBtn.hide(),
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+  }
 }
 
 async function fetchArticles() {
   loadMoreBtn.disable();
-  Loading.standard();
+  Loading.circle('Loading...', {
+    messageFontSize: '24px',
+    messageColor: '#8430c8',
+    svgSize: '100px',
+    svgColor: '#8430c8',
+  });
   const { hits } = await newsApiService.fetchArticles();
   appendArticlesMarkup(hits);
   Loading.remove();
@@ -62,12 +79,7 @@ function appendArticlesMarkup(hits) {
   let listArticles = hits.map(getItemTemplate);
 
   refs.articlesContainer.insertAdjacentHTML('beforeend', listArticles.join(''));
-
-  new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-    disableRightClick: true,
-  });
+  gallery.refresh();
 }
 
 function clearArticlesContainer() {

@@ -22,10 +22,20 @@
 .info {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .articles div {
   overflow: hidden;
+}
+
+.load-more-btn {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.info-item {
+  margin: 0;
 }
 
 .articles img {

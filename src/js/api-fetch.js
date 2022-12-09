@@ -11,9 +11,10 @@ export default class NewsApiService {
   }
 
   async fetchArticles() {
-    const url = `${BASE_URL}/?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`;  
-    const { data } = await axios(url)
-    return data
+    const url = `${BASE_URL}/?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`;
+    const { data } = await axios(url);
+    this.incrementPage();
+    return data;
   }
 
   incrementPage() {
