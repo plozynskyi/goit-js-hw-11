@@ -5,11 +5,10 @@ html {
 }
 
 body {
+  position: relative;
   font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-
-  background: url('http://i.hizliresim.com/v4Qykv.png') no-repeat center center
-    fixed;
+  background: url(/src/images/background.png) no-repeat center center fixed;
   background-size: cover;
   line-height: 1.5;
   font-size: 13px;

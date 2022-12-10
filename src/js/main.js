@@ -20,6 +20,7 @@ let gallery = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
   disableRightClick: true,
+  overlayOpacity: 0.1,
 });
 
 const newsApiService = new NewsApiService();
