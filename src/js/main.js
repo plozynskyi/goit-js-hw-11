@@ -20,7 +20,7 @@ let gallery = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
   disableRightClick: true,
-  overlayOpacity: 0.1,
+  overlayOpacity: 0.5,
 });
 
 const newsApiService = new NewsApiService();
@@ -74,6 +74,8 @@ async function fetchArticles() {
   appendArticlesMarkup(hits);
   Loading.remove();
   loadMoreBtn.enable();
+
+  smoothScroll();
 }
 
 function appendArticlesMarkup(hits) {
@@ -85,4 +87,15 @@ function appendArticlesMarkup(hits) {
 
 function clearArticlesContainer() {
   refs.articlesContainer.innerHTML = '';
+}
+
+function smoothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+  console.log(window.scrollBy());
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
