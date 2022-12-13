@@ -75,7 +75,17 @@ async function fetchArticles() {
   Loading.remove();
   loadMoreBtn.enable();
 
-  smoothScroll();
+  if (hits.length > 0) {
+    Notify.success(`Hooray! We found ${totalHits} images.`);
+    loadMoreBtn.show();
+  } else {
+    loadMoreBtn.hide(),
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+  }
+
+  // smoothScroll();
 }
 
 function appendArticlesMarkup(hits) {
@@ -89,13 +99,13 @@ function clearArticlesContainer() {
   refs.articlesContainer.innerHTML = '';
 }
 
-function smoothScroll() {
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
-  console.log(window.scrollBy());
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
-}
+// function smoothScroll() {
+//   const { height: cardHeight } = document
+//     .querySelector('.gallery')
+//     .firstElementChild.getBoundingClientRect();
+//   console.log(window.scrollBy());
+//   window.scrollBy({
+//     top: cardHeight * 2,
+//     behavior: 'smooth',
+//   });
+// }
