@@ -97,7 +97,6 @@ async function fetchArticles() {
       loadMoreBtn.hide();
     } else smoothScroll();
   }
-}
 
 function appendArticlesMarkup(hits) {
   let listArticles = hits.map(getItemTemplate);
