@@ -54,6 +54,7 @@ async function onSearch(e) {
   if (hits.length > 0) {
     Notify.success(`Hooray! We found ${totalHits} images.`);
     loadMoreBtn.show();
+    loadMoreBtn.enable();
   } else {
     loadMoreBtn.hide(),
       Notify.failure(
@@ -63,29 +64,39 @@ async function onSearch(e) {
 }
 
 async function fetchArticles() {
-  loadMoreBtn.disable();
-  Loading.circle('Loading...', {
-    messageFontSize: '24px',
-    messageColor: '#8430c8',
-    svgSize: '100px',
-    svgColor: '#8430c8',
-  });
-  const { hits } = await newsApiService.fetchArticles();
-  appendArticlesMarkup(hits);
-  Loading.remove();
-  loadMoreBtn.enable();
+  try {
+    loadMoreBtn.disable();
+    Loading.circle('Loading...', {
+      messageFontSize: '24px',
+      messageColor: '#8430c8',
+      svgSize: '100px',
+      svgColor: '#8430c8',
+    });
+    const { hits } = await newsApiService.fetchArticles();
+    appendArticlesMarkup(hits);
+    Loading.remove();
+    loadMoreBtn.enable();
 
-  if (hits.length > 0) {
-    Notify.success(`Hooray! We found ${totalHits} images.`);
-    loadMoreBtn.show();
-  } else {
-    loadMoreBtn.hide(),
+    if (hits.length > 0) {
+      Notify.success(`Hooray! We found ${totalHits} images.`);
+      loadMoreBtn.show();
+      loadMoreBtn.enable();
+    } else {
+      loadMoreBtn.hide(),
+        Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+    }
+  } catch (err) {
+    if (err.code === 'ERR_BAD_REQUEST') {
       Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
+        "We're sorry, but you've reached the end of search results."
       );
+      Loading.remove();
+      loadMoreBtn.disable();
+      loadMoreBtn.hide();
+    } else smoothScroll();
   }
-
-  // smoothScroll();
 }
 
 function appendArticlesMarkup(hits) {
@@ -99,13 +110,12 @@ function clearArticlesContainer() {
   refs.articlesContainer.innerHTML = '';
 }
 
-// function smoothScroll() {
-//   const { height: cardHeight } = document
-//     .querySelector('.gallery')
-//     .firstElementChild.getBoundingClientRect();
-//   console.log(window.scrollBy());
-//   window.scrollBy({
-//     top: cardHeight * 2,
-//     behavior: 'smooth',
-//   });
-// }
+function smoothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
